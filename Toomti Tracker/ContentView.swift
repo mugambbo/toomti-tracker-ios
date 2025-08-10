@@ -10,7 +10,7 @@ import CoreLocation
 
 struct ContentView: View {
     @StateObject private var obdManager = OBDManager.shared
-    @StateObject private var locationManager = LocationManager()
+    @StateObject private var locationManager = LocationManager.shared
     
     var body: some View {
         NavigationView {
@@ -31,6 +31,23 @@ struct ContentView: View {
                             .frame(width: 12, height: 12)
                         Text("Location: \(locationManager.authorizationStatus)")
                             .font(.headline)
+                    }
+                    
+                    // Add a button to manually request permission if needed
+                    if locationManager.authorizationStatus == "Not Determined" ||
+                       locationManager.authorizationStatus.contains("Denied") {
+                        Button("Request Location Permission") {
+                            if locationManager.authorizationStatus.contains("Denied") {
+                                // Open Settings
+                                if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
+                                    UIApplication.shared.open(settingsUrl)
+                                }
+                            } else {
+                                locationManager.requestPermission()
+                            }
+                        }
+                        .font(.caption)
+                        .foregroundColor(.blue)
                     }
                 }
                 .padding()
@@ -67,21 +84,25 @@ struct ContentView: View {
                 VStack(spacing: 10) {
                     if !obdManager.isConnected {
                         Button("Connect to OBD") {
+                            print("Connect button tapped in UI")
                             obdManager.connect()
                         }
                         .buttonStyle(PrimaryButtonStyle())
                     } else {
                         Button("Disconnect") {
+                            print("Disconnect button tapped in UI")
                             obdManager.disconnect()
                         }
                         .buttonStyle(SecondaryButtonStyle())
                     }
                     
+                    // Make sure this button is always enabled for testing
                     Button("Send Test Data") {
+                        print("Send Test Data button tapped in UI")
                         obdManager.sendTestData()
                     }
                     .buttonStyle(SecondaryButtonStyle())
-                    .disabled(!obdManager.isConnected)
+                    // Remove the .disabled modifier to always allow testing
                 }
                 
                 Spacer()
