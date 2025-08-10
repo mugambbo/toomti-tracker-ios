@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct Toomti_TrackerApp: App {
+struct ToomtiTrackerApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
