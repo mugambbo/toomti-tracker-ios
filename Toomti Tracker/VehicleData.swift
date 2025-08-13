@@ -39,6 +39,9 @@ struct VehicleData {
     var dtcCount: Int = 0
     var rawDTC: String = ""
     
+    var currentProtocolNumber: Int = 6  // Default to CAN
+    var protocolName: String = ""
+    
     var timestamp: Date = Date()
     
     var isValid: Bool {
